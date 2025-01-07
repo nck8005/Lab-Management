@@ -17,16 +17,15 @@
             margin: auto;
             box-sizing: border-box;
         }
-
-        h1 {
+        h1{
             text-align: center;
             color: #000;
+            text-decoration: underline;
         }
-
         h2 {
+            text-align: left;
             color: #000;
             text-decoration: underline;
-            margin-bottom: 10px;
         }
 
         pre {
@@ -49,13 +48,20 @@
             border-radius: 5px;
             margin: 0 10px;
         }
+
+        .spacer {
+            height: 3em; /* Adds 3 blank lines */
+        }
     </style>
 </head>
 <body>
-    <h1>Python Program Record</h1>
+    <h1 text-align="center">Program:</h1>
     
+    <h2>Aim:</h2>
+    <div class="spacer"></div> <!-- Blank space -->
+
     <div class="program">
-        <h2>Program:</h2>
+        <h2>Source Code:</h2>
         <pre>{{ code|safe }}</pre>
     </div>
 
