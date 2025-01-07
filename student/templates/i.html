@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Programs and Outputs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f9;
+        }
+        .program {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            background-color: #ffffff;
+        }
+        h2 {
+            color: #333;
+        }
+        pre {
+            background: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .output {
+            background: #eef7ee;
+            border: 1px solid #cce5cc;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Java Programs and Outputs</h1>
+    
+    <div class="program">
+        <h2>Program 21: Factorial Calculation</h2>
+        <p><strong>Aim:</strong> Create a class `Factorial` with a method that accepts a number and returns its factorial in a package `P1`. Using the `Factorial` class, write a program to find the factorial of a number.</p>
+        <pre><code>package javaproject;
+
+public class Factorial {
+    public int calculateFactorial(int num) {
+        int result = 1;
+        for (int i = 1; i <= num; i++) {
+            result *= i;
+        }
+        return result;
+    }
+}
+
+// Main application
+package javaproject;
+
+import java.util.Scanner;
+
+public class Mainapp {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter a number to find its factorial: ");
+        int number = scanner.nextInt();
+        Factorial factorial = new Factorial();
+        int result = factorial.calculateFactorial(number);
+        System.out.println("Factorial of " + number + " is: " + result);
+        scanner.close();
+    }
+}</code></pre>
+        <div class="output">
+            <h3>Output:</h3>
+            <p>Enter a number to find its factorial:<br>3<br>Factorial of 3 is: 6</p>
+        </div>
+    </div>
+    
+    <div class="program">
+        <h2>Program 22: Handle Arithmetic Exception</h2>
+        <p><strong>Aim:</strong> Write a program to handle arithmetic exceptions.</p>
+        <pre><code>package javaproject;
+
+import java.util.Scanner;
+
+public class ArthematicExc {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter the numerator: ");
+        int numerator = scanner.nextInt();
+        System.out.print("Enter the denominator: ");
+        int denominator = scanner.nextInt();
+        try {
+            int result = numerator / denominator;
+            System.out.println("Result: " + result);
+        } catch (ArithmeticException e) {
+            System.out.println("Error: Cannot divide by zero");
+        }
+    }
+}</code></pre>
+        <div class="output">
+            <h3>Output:</h3>
+            <p>Enter the numerator: 6<br>Enter the denominator: 0<br>Error: Cannot divide by zero</p>
+            <p>Enter the numerator: 6<br>Enter the denominator: 3<br>Result: 2</p>
+        </div>
+    </div>
+    
+    <div class="program">
+        <h2>Program 23: Custom Exception</h2>
+        <p><strong>Aim:</strong> Create a user-defined exception `OddValExp` to be invoked when the read number is an odd number.</p>
+        <pre><code>package javaproject;
+
+public class OddValExce extends Exception {
+    public OddValExce(String message) {
+        super(message);
+    }
+}
+
+// Main application
+package javaproject;
+
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter the number: ");
+        int number = scanner.nextInt();
+        try {
+            if (number % 2 != 0) {
+                throw new OddValExce("Error: The number is odd!");
+            }
+            System.out.println("The number is even: " + number);
+        } catch (OddValExce e) {
+            System.out.println(e.getMessage());
+        }
+        scanner.close();
+    }
+}</code></pre>
+        <div class="output">
+            <h3>Output:</h3>
+            <p>Enter the number: 9<br>Error: The number is odd!</p>
+            <p>Enter the number: 12<br>The number is even: 12</p>
+        </div>
+    </div>
+</body>
+</html>

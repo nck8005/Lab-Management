@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Program Record</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #ffffff;
+            border: 2px solid #000;
+            width: 21cm;
+            height: 29.7cm;
+            margin: auto;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            text-align: center;
+            color: #000;
+        }
+
+        h2 {
+            color: #000;
+            text-decoration: underline;
+            margin-bottom: 10px;
+        }
+
+        pre {
+            font-family: Consolas, "Courier New", monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin: 10px 0;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .button-container a {
+            text-decoration: none;
+            color: white;
+            background-color: #007BFF;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Python Program Record</h1>
+    
+    <div class="program">
+        <h2>Program:</h2>
+        <pre>{{ code|safe }}</pre>
+    </div>
+
+    <div class="output">
+        <h2>Output:</h2>
+        <pre>{{ output|safe }}</pre>
+    </div>
+
+    {% if not hide_button %}
+    <div class="button-container">
+        <a href="{% url 'generate_pdf' code=code|urlencode output=output|urlencode %}">Download PDF</a>
+    </div>
+    {% endif %}
+</body>
+</html>

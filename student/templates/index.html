@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Python Online Compiler{% endblock %}
+
+{% block content %}
+<h1>Python Online Compiler</h1>
+<form method="post" action="{% url 'compile' %}">
+    {% csrf_token %}
+    <textarea name="code" rows="10" cols="50" placeholder="Write your Python code here...">{% if code %}{{ code }}{% endif %}</textarea><br>
+    <button type="submit">Compile</button>
+</form>
+
+{% if output %}
+    <h3>Output:</h3>
+    <pre>{{ output }}</pre>
+    <a href="{% url 'view_pdf' code=code|urlencode output=output|urlencode %}">
+        <button>View as PDF</button>
+    </a>
+{% endif %}
+{% endblock %}
+
