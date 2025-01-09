@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Program Record</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #ffffff;
+            width: 21cm;
+            height: 29.7cm;
+            margin: auto;
+            box-sizing: border-box;
+            border: 2px solid #000;
+        }
+        h1 {
+            text-align: center;
+            color: #000;
+            text-decoration: underline;
+        }
+        h2 {
+            text-align: left;
+            color: #000;
+            text-decoration: underline;
+        }
+        pre {
+            font-family: Consolas, "Courier New", monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin: 10px 0;
+        }
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .button-container a {
+            text-decoration: none;
+            color: white;
+            background-color: #007BFF;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin: 0 10px;
+        }
+        .spacer {
+            height: 3em; /* Adds 3 blank lines */
+        }
+
+        /* CSS for page breaks */
+        @media print {
+            body {
+                width: 21cm;
+                height: 29.7cm;
+                border: none;
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+            }
+            .page {
+                page-break-after: always;
+                width: 21cm;
+                height: 29.7cm;
+                padding: 20px;
+                border: 2px solid #000;
+                box-sizing: border-box;
+            }
+            .page:last-child {
+                page-break-after: auto;
+            }
+            .button-container {
+                display: none; /* Hide buttons during printing */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <h1>Program:</h1>
+        <h2>Aim:</h2>
+        <div class="spacer"></div> <!-- Blank space -->
+
+        <div class="program">
+            <h2>Source Code:</h2>
+            <pre>{{ code|safe }}</pre>
+        </div>
+    </div>
+
+    <div class="page">
+        <div class="output">
+            <h2>Output:</h2>
+            <pre>{{ output|safe }}</pre>
+        </div>
+    </div>
+
+    {% if not hide_button %}
+    <div class="button-container">
+        <a href="{% url 'generate_pdf' code=code|urlencode output=output|urlencode %}">Download PDF</a>
+    </div>
+    {% endif %}
+</body>
+</html>
