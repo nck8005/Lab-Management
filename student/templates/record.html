@@ -9,34 +9,48 @@
             font-family: Arial, sans-serif;
             line-height: 1.6;
             margin: 0;
-            padding: 20px;
+            padding: 0;
             background-color: #ffffff;
+        }
+
+        .page {
             width: 21cm;
             height: 29.7cm;
-            margin: auto;
+            margin: 10px auto;
+            padding: 20px;
             box-sizing: border-box;
             border: 2px solid #000;
+            page-break-after: always;
         }
+
+        .page:last-child {
+            page-break-after: auto;
+        }
+
         h1 {
             text-align: center;
             color: #000;
             text-decoration: underline;
         }
+
         h2 {
             text-align: left;
             color: #000;
             text-decoration: underline;
         }
+
         pre {
             font-family: Consolas, "Courier New", monospace;
             white-space: pre-wrap;
             word-wrap: break-word;
             margin: 10px 0;
         }
+
         .button-container {
             text-align: center;
             margin-top: 20px;
         }
+
         .button-container a {
             text-decoration: none;
             color: white;
@@ -45,38 +59,38 @@
             border-radius: 5px;
             margin: 0 10px;
         }
+
         .spacer {
             height: 3em; /* Adds 3 blank lines */
         }
 
-        /* CSS for page breaks */
         @media print {
             body {
-                width: 21cm;
-                height: 29.7cm;
-                border: none;
                 margin: 0;
                 padding: 0;
-                box-shadow: none;
             }
+
             .page {
-                page-break-after: always;
+                border: 2px solid #000;
                 width: 21cm;
                 height: 29.7cm;
+                margin: 0;
                 padding: 20px;
-                border: 2px solid #000;
-                box-sizing: border-box;
+                page-break-after: always;
             }
+
             .page:last-child {
                 page-break-after: auto;
             }
+
             .button-container {
-                display: none; /* Hide buttons during printing */
+                display: none; /* Hide buttons during print */
             }
         }
     </style>
 </head>
 <body>
+    <!-- Program Section -->
     <div class="page">
         <h1>Program:</h1>
         <h2>Aim:</h2>
@@ -88,6 +102,7 @@
         </div>
     </div>
 
+    <!-- Output Section -->
     <div class="page">
         <div class="output">
             <h2>Output:</h2>
@@ -95,11 +110,19 @@
         </div>
     </div>
 
+    <!-- Handle Dynamic Content Length -->
+    {% if code|length > 100 or output|length > 100 %}
+    {% for page_content in dynamic_content %}
+    <div class="page">
+        <pre>{{ page_content|safe }}</pre>
+    </div>
+    {% endfor %}
+    {% endif %}
+
     {% if not hide_button %}
     <div class="button-container">
         <a href="{% url 'generate_pdf' code=code|urlencode output=output|urlencode %}">Download PDF</a>
     </div>
-    
     {% endif %}
 </body>
 </html>
