@@ -38,6 +38,7 @@
 
     let noFaceCount = 0;
     let alarmTriggered = false;
+    let malpracticeCycleCount = 0; // Track the number of malpractice cycles
 
     // Load the face detection models
     async function loadModels() {
@@ -85,21 +86,39 @@
     async function monitorFaceDetection() {
         const options = new faceapi.TinyFaceDetectorOptions({ inputSize: 160, scoreThreshold: 0.5 });
 
+        let faceDetectedLastCycle = true; // Track if a face was detected in the last cycle
+
         setInterval(async () => {
             const detections = await faceapi.detectAllFaces(video, options);
 
             if (detections.length > 0) {
+                // Face detected
                 noFaceCount = 0;
                 stopAlarm();
                 console.log("Face detected.");
+
+                if (!faceDetectedLastCycle) {
+                    // If this is the first time the face returned after being absent
+                    malpracticeCycleCount++;
+                    console.log(`Cycle ${malpracticeCycleCount} complete (face returned).`);
+
+                    if (malpracticeCycleCount >= 3) {
+                        window.location.href = "/malpractice/"; // Redirect after 3 cycles
+                    }
+                }
+                faceDetectedLastCycle = true;
+
             } else {
+                // No face detected
                 noFaceCount++;
                 console.log(`No face detected for ${noFaceCount} second(s).`);
-                if (noFaceCount >= 3) {
+                if (noFaceCount >= 3 && faceDetectedLastCycle) {
+                    // If no face for 3 seconds, play alarm
                     playAlarm();
+                    faceDetectedLastCycle = false; // Face is no longer detected in this cycle
                 }
             }
-        }, 1000);
+        }, 1000); // Check every second
     }
 
     // Initialize face detection

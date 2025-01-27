@@ -9,6 +9,10 @@ import pdfkit
 PDFKIT_CONFIG = pdfkit.configuration(wkhtmltopdf=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe')
 
 def index(request):
+    # Check if the user has committed malpractice
+    if request.session.get('malpractice_detected', False):
+        return redirect('malpractice')
+    
     return render(request, 'index.html')
 
 def compile_code(request):
@@ -63,3 +67,7 @@ def generate_pdf(request, code, output):
     response = HttpResponse(pdf, content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="record.pdf"'
     return response
+
+# New view for malpractice page
+def malpractice(request):
+    return render(request, 'malpractice.html')
