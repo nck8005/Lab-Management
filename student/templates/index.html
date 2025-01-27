@@ -1,9 +1,19 @@
 {% extends 'base.html' %}
 
-{% block title %}Python Online Compiler{% endblock %}
+{% block title %}Python Online Compiler with Proctoring{% endblock %}
 
 {% block content %}
 <h1>Python Online Compiler</h1>
+
+<!-- Webcam Video Feed -->
+<video id="webcam" autoplay playsinline width="320" height="240" style="border: 1px solid black;"></video>
+<audio id="alarm-sound" src="/static/alarm.mp3" preload="auto"></audio>
+
+<!-- Warning Message -->
+<div id="warning-message" style="position: fixed; top: 10px; left: 10px; color: red; font-size: 18px; font-weight: bold; display: none;">
+    Malpractice detected!
+</div>
+
 <form method="post" action="{% url 'compile' %}">
     {% csrf_token %}
     <textarea name="code" rows="10" cols="50" placeholder="Write your Python code here...">{% if code %}{{ code }}{% endif %}</textarea><br>
@@ -17,5 +27,82 @@
         <button>View as PDF</button>
     </a>
 {% endif %}
-{% endblock %}
 
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api@latest/dist/face-api.min.js"></script>
+
+<script>
+    const video = document.getElementById('webcam');
+    const alarmSound = document.getElementById('alarm-sound');
+    const warningMessage = document.getElementById('warning-message');
+
+    let noFaceCount = 0;
+    let alarmTriggered = false;
+
+    // Load the face detection models
+    async function loadModels() {
+        await faceapi.nets.tinyFaceDetector.loadFromUri('/static/models/');
+        console.log("Face detection models loaded.");
+        startWebcam();
+    }
+
+    // Access the webcam
+    function startWebcam() {
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+                console.log("Webcam accessed successfully.");
+                monitorFaceDetection();
+            })
+            .catch(error => {
+                console.error('Error accessing webcam:', error);
+            });
+    }
+
+    // Play the alarm
+    function playAlarm() {
+        if (!alarmTriggered) {
+            console.log("Displaying warning message and playing alarm.");
+            warningMessage.style.display = 'block';
+            alarmSound.loop = true;
+            alarmSound.play().catch(err => console.error('Error playing alarm sound:', err));
+            alarmTriggered = true;
+        }
+    }
+
+    // Stop the alarm
+    function stopAlarm() {
+        if (alarmTriggered) {
+            console.log("Hiding warning message and stopping alarm.");
+            warningMessage.style.display = 'none';
+            alarmSound.pause();
+            alarmSound.currentTime = 0;
+            alarmTriggered = false;
+        }
+    }
+
+    // Monitor for face detection
+    async function monitorFaceDetection() {
+        const options = new faceapi.TinyFaceDetectorOptions({ inputSize: 160, scoreThreshold: 0.5 });
+
+        setInterval(async () => {
+            const detections = await faceapi.detectAllFaces(video, options);
+
+            if (detections.length > 0) {
+                noFaceCount = 0;
+                stopAlarm();
+                console.log("Face detected.");
+            } else {
+                noFaceCount++;
+                console.log(`No face detected for ${noFaceCount} second(s).`);
+                if (noFaceCount >= 3) {
+                    playAlarm();
+                }
+            }
+        }, 1000);
+    }
+
+    // Initialize face detection
+    loadModels();
+</script>
+{% endblock %}

@@ -116,10 +116,37 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'  
-STATICFILES_DIRS = [BASE_DIR / 'student/static']  
+#STATIC_URL = 'static/'  
+#STATICFILES_DIRS = [BASE_DIR / 'student/static']
+#STATIC_ROOT = BASE_DIR / "staticfiles"  
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+import os
+
+# URL for accessing static files
+STATIC_URL = '/static/'
+
+
+
+# Static files (CSS, JavaScript, images) will be collected into this directory during collectstatic
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Specify additional static directories (like your models and alarm files)
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]  
+
+# To load face-api models from the 'models' directory inside static
+#STATICFILES_FINDERS = [
+    #'django.contrib.staticfiles.finders.FileSystemFinder',
+    #'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    #'django.contrib.staticfiles.finders.DefaultStorageFinder',  # Ensures default static storage
+#]
+
+# Enable serving of media files during development (not required for production)
+#if DEBUG:
+    #MEDIA_URL = '/media/'
+    #MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

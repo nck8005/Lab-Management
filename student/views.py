@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.template.loader import render_to_string
 from urllib.parse import unquote
 import requests
@@ -39,33 +39,27 @@ def compile_code(request):
     return render(request, 'index.html', {'code': code, 'output': output})
 
 def view_pdf(request, code, output):
-    # Decode the code and output
     decoded_code = unquote(code)
     decoded_output = unquote(output)
 
-    # Render the record as a webpage
     return render(request, 'record.html', {
         'code': decoded_code,
         'output': decoded_output,
-        'hide_button': False  # Ensure the button is visible when viewing as a webpage
+        'hide_button': False
     })
 
 def generate_pdf(request, code, output):
-    # Decode the code and output
     decoded_code = unquote(code)
     decoded_output = unquote(output)
 
-    # Render the HTML content for the PDF with `hide_button` set to True
     html_content = render_to_string('record.html', {
         'code': decoded_code,
         'output': decoded_output,
-        'hide_button': True  # Hide the button when generating the PDF
+        'hide_button': True
     })
 
-    # Generate the PDF
     pdf = pdfkit.from_string(html_content, False, configuration=PDFKIT_CONFIG)
 
-    # Return the PDF as a downloadable response
     response = HttpResponse(pdf, content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="record.pdf"'
     return response
