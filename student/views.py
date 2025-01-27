@@ -11,6 +11,8 @@ PDFKIT_CONFIG = pdfkit.configuration(wkhtmltopdf=r'C:\Program Files\wkhtmltopdf\
 def index(request):
     # Check if the user has committed malpractice
     if request.session.get('malpractice_detected', False):
+    #request.session['malpractice_detected'] = True
+
         return redirect('malpractice')
     
     return render(request, 'index.html')
