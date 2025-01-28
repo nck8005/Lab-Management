@@ -11,15 +11,17 @@ PDFKIT_CONFIG = pdfkit.configuration(wkhtmltopdf=r'C:\Program Files\wkhtmltopdf\
 def index(request):
     # Check if the user has committed malpractice
     if request.session.get('malpractice_detected', False):
-    #request.session['malpractice_detected'] = True
-
         return redirect('malpractice')
-    
-    return render(request, 'index.html')
+
+    # Default mode is 'lab' if not set
+    selected_mode = request.GET.get('mode', 'lab')
+
+    return render(request, 'index.html', {'selected_mode': selected_mode})
 
 def compile_code(request):
     code = ""
     output = ""
+    selected_mode = request.POST.get('mode', 'lab')  # Default to lab mode if not provided
 
     if request.method == 'POST':
         code = request.POST.get('code', '')
@@ -42,7 +44,11 @@ def compile_code(request):
 
         output = result.get('output', result.get('error', 'Error executing code'))
 
-    return render(request, 'index.html', {'code': code, 'output': output})
+    return render(request, 'index.html', {
+        'code': code,
+        'output': output,
+        'selected_mode': selected_mode
+    })
 
 def view_pdf(request, code, output):
     decoded_code = unquote(code)
