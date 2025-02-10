@@ -3,7 +3,13 @@
 {% block title %}Python Online Compiler with Proctoring{% endblock %}
 
 {% block content %}
+<!-- Navbar -->
+<nav style="background-color: #f0f0f0; padding: 10px;">
+    <a href="{% url 'home' %}">Home</a>
+</nav>
 <h1>Python Online Compiler</h1>
+<h2>Aim:</h2>
+<p>{{ question }}</p>
 
 <!-- Mode Selection -->
 <div>
@@ -18,15 +24,17 @@
 <form method="post" action="{% url 'compile' %}">
     {% csrf_token %}
     <input type="hidden" id="mode-input" name="mode" value="lab">
-    <textarea name="code" rows="10" cols="50" placeholder="Write your Python code here...">{% if code %}{{ code }}{% endif %}</textarea><br>
+    <textarea id="code-area" name="code" rows="10" cols="50" placeholder="Write your Python code here...">{{ code }}</textarea><br>
     <button type="submit">Compile</button>
 </form>
 
-{% if output %}
+<div id="output-section" {% if not output %}style="display: none;"{% endif %}>
     <h3>Output:</h3>
-    <pre>{{ output }}</pre>
-    <a href="{% url 'view_pdf' code=code|urlencode output=output|urlencode %}"><button>View as PDF</button></a>
-{% endif %}
+    <pre id="output-content">{{ output }}</pre>
+    <a id="view-pdf-button" href="{% url 'view_pdf' code=code|urlencode output=output|urlencode %}">
+        <button>View as PDF</button>
+    </a>
+</div>
 
 <video id="webcam" autoplay playsinline width="320" height="240" style="border: 1px solid black; display: none;"></video>
 <audio id="alarm-sound" src="/static/alarm3.mp3" preload="auto"></audio>
@@ -44,6 +52,10 @@
     const warningMessage = document.getElementById('warning-message');
     const modeSelector = document.getElementById('mode-selector');
     const modeInput = document.getElementById('mode-input');
+    const codeArea = document.getElementById('code-area');
+    const outputSection = document.getElementById('output-section');
+    const outputContent = document.getElementById('output-content');
+    const viewPdfButton = document.getElementById('view-pdf-button');
 
     let mode = modeSelector.value; // Default to lab mode
 
@@ -54,18 +66,72 @@
         if (mode === 'lab') {
             stopWebcam();
         } else {
+            // Clear the code text area and wipe output data completely
+            codeArea.value = "";
+            outputContent.textContent = ""; // Clear the output content
+            outputSection.style.display = 'none'; // Hide the output section
+            viewPdfButton.style.display = 'none';
             startWebcam();
             modeSelector.disabled = true; // Disable the mode selector once exam mode is selected
         }
     });
 
+
     document.addEventListener('DOMContentLoaded', () => {
-        modeInput.value = modeSelector.value; // Set the initial mode for form submission
+    modeInput.value = modeSelector.value; // Set the initial mode for form submission
+
+    const navbar = document.querySelector('nav');
+
+    if (mode === 'exam') {
+        startWebcam();
+        modeSelector.disabled = true;
+        navbar.style.display = 'none'; // Hide the navbar
+
+        // Activate Fullscreen Mode for Exam
+        document.documentElement.requestFullscreen().catch(console.error);
+
+        // Prevent Exit from Fullscreen
+        document.addEventListener('fullscreenchange', function () {
+            if (!document.fullscreenElement) {
+                alert("You cannot exit fullscreen during the exam!");
+                document.documentElement.requestFullscreen();
+            }
+        });
+    }
+
+    modeSelector.addEventListener('change', function () {
+        mode = modeSelector.value;
+        modeInput.value = mode;
+
         if (mode === 'exam') {
+            navbar.style.display = 'none'; // Hide the navbar
             startWebcam();
-            modeSelector.disabled = true; // Disable the mode selector if exam mode is already selected
+            modeSelector.disabled = true;
+
+            // Activate Fullscreen Mode for Exam
+            document.documentElement.requestFullscreen().catch(console.error);
+
+            // Prevent Exit from Fullscreen
+            document.addEventListener('fullscreenchange', function () {
+                if (!document.fullscreenElement) {
+                    alert("You cannot exit fullscreen during the exam!");
+                    document.documentElement.requestFullscreen();
+                }
+            });
+            
+
+            // Clear the code text area and wipe output data completely
+            codeArea.value = "";
+            outputContent.textContent = "";
+            outputSection.style.display = 'none';
+            viewPdfButton.style.display = 'none';
+        } else {
+            navbar.style.display = 'block'; // Show the navbar
+            stopWebcam();
         }
     });
+});
+
 
     let noFaceCount = 0;
     let staticFaceCount = 0;
@@ -174,5 +240,23 @@
     }
 
     loadModels();
+
+    // Auto-save the code on input
+    codeArea.addEventListener('input', function () {
+        saveCode();
+    });
+
+    function saveCode() {
+        const code = codeArea.value;
+        fetch("{% url 'save_code' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': "{{ csrf_token }}"
+            },
+            body: new URLSearchParams({ 'code': code })
+        }).catch(err => console.error("Error saving code:", err));
+    }
+
 </script>
 {% endblock %}

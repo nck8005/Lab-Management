@@ -90,10 +90,29 @@
     </style>
 </head>
 <body>
-    <!-- Program Section -->
+    <!-- Program and Output Section -->
+    {% if code|length <= 100 and output|length <= 100 %}
     <div class="page">
         <h1>Program:</h1>
         <h2>Aim:</h2>
+        <p>{{ question }}</p>
+        <div class="spacer"></div> <!-- Blank space -->
+
+        <div class="program">
+            <h2>Source Code:</h2>
+            <pre>{{ code|safe }}</pre>
+        </div>
+
+        <div class="output">
+            <h2>Output:</h2>
+            <pre>{{ output|safe }}</pre>
+        </div>
+    </div>
+    {% else %}
+    <div class="page">
+        <h1>Program:</h1>
+        <h2>Aim:</h2>
+        <p>{{ question }}</p>
         <div class="spacer"></div> <!-- Blank space -->
 
         <div class="program">
@@ -102,13 +121,13 @@
         </div>
     </div>
 
-    <!-- Output Section -->
     <div class="page">
         <div class="output">
             <h2>Output:</h2>
             <pre>{{ output|safe }}</pre>
         </div>
     </div>
+    {% endif %}
 
     <!-- Handle Dynamic Content Length -->
     {% if code|length > 100 or output|length > 100 %}
@@ -122,6 +141,7 @@
     {% if not hide_button %}
     <div class="button-container">
         <a href="{% url 'generate_pdf' code=code|urlencode output=output|urlencode %}">Download PDF</a>
+        <button onclick="markComplete('{{ question }}')" style="background-color: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Complete</button>
     </div>
     {% endif %}
 </body>

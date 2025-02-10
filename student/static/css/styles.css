@@ -2,9 +2,8 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #a7a2a2;
-    align-items: center;
-    text-align: center;
+    background-color: #fffefe;
+ 
 }
 
 .container {
@@ -14,7 +13,7 @@ body {
 }
 
 header {
-    background: #35424a;
+    background: #ffffff;
     color: #ffffff;
     padding: 20px 0;
     text-align: center;

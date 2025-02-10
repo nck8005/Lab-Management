@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Python Questions{% endblock %}
+
+{% block content %}
+<h1>Python Questions</h1>
+<div style="margin-top: 20px;">
+    <ul style="list-style-type: none; padding: 0;">
+        <li>
+            <h2>Question 1</h2>
+            <p>Write a Python program to find the factorial of a number.</p>
+            <form method="post" action="{% url 'index' %}">
+                {% csrf_token %}
+                <input type="hidden" name="question" value="Write a Python program to find the factorial of a number.">
+                <button type="submit">
+                    {% if submissions.question_1.submitted %}Edit Solution{% else %}Solve This{% endif %}
+                </button>
+            </form>
+            <div style="margin-top: 10px;">
+                <span>Status: </span>
+                <input type="text" value="{% if submissions.question_1.pdf_generated %}Complete{% else %}Incomplete{% endif %}" readonly style="width: 100px; color: {% if submissions.question_1.pdf_generated %}green{% else %}red{% endif %}; background: none; border: none;">
+            </div>
+        </li>
+
+        <li>
+            <h2>Question 2</h2>
+            <p>Write a Python program to check if a string is a palindrome.</p>
+            <form method="post" action="{% url 'index' %}">
+                {% csrf_token %}
+                <input type="hidden" name="question" value="Write a Python program to check if a string is a palindrome.">
+                <button type="submit">
+                    {% if submissions.question_2.submitted %}Edit Solution{% else %}Solve This{% endif %}
+                </button>
+            </form>
+            <div style="margin-top: 10px;">
+                <span>Status: </span>
+                <input type="text" value="{% if submissions.question_2.pdf_generated %}Complete{% else %}Incomplete{% endif %}" readonly style="width: 100px; color: {% if submissions.question_2.pdf_generated %}green{% else %}red{% endif %}; background: none; border: none;">
+            </div>
+        </li>
+
+        <li>
+            <h2>Question 3</h2>
+            <p>Write a Python program to generate Fibonacci series up to a given number.</p>
+            <form method="post" action="{% url 'index' %}">
+                {% csrf_token %}
+                <input type="hidden" name="question" value="Write a Python program to generate Fibonacci series up to a given number.">
+                <button type="submit">
+                    {% if submissions.question_3.submitted %}Edit Solution{% else %}Solve This{% endif %}
+                </button>
+            </form>
+            <div style="margin-top: 10px;">
+                <span>Status: </span>
+                <input type="text" value="{% if submissions.question_3.pdf_generated %}Complete{% else %}Incomplete{% endif %}" readonly style="width: 100px; color: {% if submissions.question_3.pdf_generated %}green{% else %}red{% endif %}; background: none; border: none;">
+            </div>
+        </li>
+    </ul>
+</div>
+{% endblock %}

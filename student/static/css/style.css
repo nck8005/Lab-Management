@@ -1,0 +1,235 @@
+/* General Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+    padding: 0;
+    color: #007bff;
+}
+
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Header Styles */
+header {
+    background-color: #007bff;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2.5em;
+}
+
+/* Navigation Styles */
+nav {
+    background-color: #007bff;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+nav a {
+    color: white;
+    font-weight: 600;
+    margin-right: 15px;
+    padding: 8px 15px;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+nav a:hover {
+    background-color: #0056b3;
+}
+
+/* Main Content Styles */
+main {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Form Styles */
+form {
+    margin: 20px 0;
+}
+
+form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+form input[type="text"],
+form input[type="password"],
+form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+}
+
+form button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+form button:hover {
+    background-color: #0056b3;
+}
+
+/* Button Styles */
+button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* List Styles */
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+ul li {
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Status Styles */
+.status {
+    font-weight: 600;
+}
+
+.status.complete {
+    color: green;
+}
+
+.status.incomplete {
+    color: red;
+}
+
+/* Login and Register Container Styles */
+.login-container, .register-container {
+    width: 300px;
+    margin: 50px auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.login-container h2, .register-container h2 {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.login-container .error, .register-container .error {
+    color: red;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+/* Malpractice Page Styles */
+.malpractice-content {
+    text-align: center;
+    padding: 20px;
+}
+
+.malpractice-content h1 {
+    color: red;
+}
+
+/* Record Page Styles */
+.page {
+    width: 21cm;
+    height: 29.7cm;
+    margin: 10px auto;
+    padding: 20px;
+    box-sizing: border-box;
+    border: 2px solid #000;
+    page-break-after: always;
+}
+
+.page:last-child {
+    page-break-after: auto;
+}
+
+.page h1, .page h2 {
+    text-align: center;
+    color: #000;
+    text-decoration: underline;
+}
+
+.page pre {
+    font-family: Consolas, "Courier New", monospace;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    margin: 10px 0;
+}
+
+.button-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.button-container a {
+    text-decoration: none;
+    color: white;
+    background-color: #007BFF;
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin: 0 10px;
+}
+
+.button-container button {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.button-container button:hover {
+    background-color: #218838;
+}
+
+@media print {
+    .button-container {
+        display: none;
+    }
+}

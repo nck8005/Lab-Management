@@ -5,8 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title text color="white">{% block title %}Lab Management{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <script>
+        document.documentElement.requestFullscreen().catch(console.error);
+     
+     // Prevent Exit from Fullscreen
+     document.addEventListener('fullscreenchange', function () {
+         if (!document.fullscreenElement) {
+             alert("You cannot exit fullscreen during the exam!");
+             document.documentElement.requestFullscreen();
+         }
+     });
+     </script>     
 </head>
 <body>
     <header>

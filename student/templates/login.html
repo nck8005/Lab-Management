@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login - Lab Management{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <h2>Login</h2>
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+    <form method="POST" action="{% url 'login' %}">
+        {% csrf_token %}
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+      
+        <label for="admission_no">Admission Number:</label>
+        <input type="text" id="admission_no" name="admission_no" required>
+      
+        <button type="submit">Login</button>
+    </form>
+</div>
+{% endblock %}
