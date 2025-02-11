@@ -1,6 +1,19 @@
 {% extends 'base.html' %}
 
 {% block title %}Home - Python Questions{% endblock %}
+<style>
+    .status-complete {
+        display: inline-block;
+        color: green;
+        font-weight: bold;
+    }
+
+    .status-incomplete {
+        display: inline-block;
+        color: red;
+        font-weight: bold;
+    }
+</style>
 
 {% block content %}
 <h1>Python Questions</h1>
@@ -13,12 +26,14 @@
                 {% csrf_token %}
                 <input type="hidden" name="question" value="Write a Python program to find the factorial of a number.">
                 <button type="submit">
-                    {% if submissions.question_1.submitted %}Edit Solution{% else %}Solve This{% endif %}
+                    Solve This
                 </button>
             </form>
             <div style="margin-top: 10px;">
                 <span>Status: </span>
-                <input type="text" value="{% if submissions.question_1.pdf_generated %}Complete{% else %}Incomplete{% endif %}" readonly style="width: 100px; color: {% if submissions.question_1.pdf_generated %}green{% else %}red{% endif %}; background: none; border: none;">
+                <div class="{% if submissions.question_1.pdf_generated %}status-complete{% else %}status-incomplete{% endif %}">
+                    {% if submissions.question_1.pdf_generated %}Complete{% else %}Incomplete{% endif %}
+                </div>
             </div>
         </li>
 
@@ -29,12 +44,14 @@
                 {% csrf_token %}
                 <input type="hidden" name="question" value="Write a Python program to check if a string is a palindrome.">
                 <button type="submit">
-                    {% if submissions.question_2.submitted %}Edit Solution{% else %}Solve This{% endif %}
+                  Solve This
                 </button>
             </form>
             <div style="margin-top: 10px;">
                 <span>Status: </span>
-                <input type="text" value="{% if submissions.question_2.pdf_generated %}Complete{% else %}Incomplete{% endif %}" readonly style="width: 100px; color: {% if submissions.question_2.pdf_generated %}green{% else %}red{% endif %}; background: none; border: none;">
+                <div class="{% if submissions.question_2.pdf_generated %}status-complete{% else %}status-incomplete{% endif %}">
+                    {% if submissions.question_2.pdf_generated %}Complete{% else %}Incomplete{% endif %}
+                </div>
             </div>
         </li>
 
@@ -45,12 +62,14 @@
                 {% csrf_token %}
                 <input type="hidden" name="question" value="Write a Python program to generate Fibonacci series up to a given number.">
                 <button type="submit">
-                    {% if submissions.question_3.submitted %}Edit Solution{% else %}Solve This{% endif %}
+                    Solve This
                 </button>
             </form>
             <div style="margin-top: 10px;">
                 <span>Status: </span>
-                <input type="text" value="{% if submissions.question_3.pdf_generated %}Complete{% else %}Incomplete{% endif %}" readonly style="width: 100px; color: {% if submissions.question_3.pdf_generated %}green{% else %}red{% endif %}; background: none; border: none;">
+                <div class="{% if submissions.question_3.pdf_generated %}status-complete{% else %}status-incomplete{% endif %}">
+                    {% if submissions.question_3.pdf_generated %}Complete{% else %}Incomplete{% endif %}
+                </div>
             </div>
         </li>
     </ul>

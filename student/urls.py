@@ -9,6 +9,7 @@ urlpatterns = [
     path('save_code/', views.save_code, name='save_code'),
     path('compile/', views.compile_code, name='compile'),
     path('view_pdf/<str:code>/<str:output>/', views.view_pdf, name='view_pdf'),
+    path('view_pdf/', views.view_pdf, name='view_pdf_default'),
     path('generate_pdf/<str:code>/<str:output>/', views.generate_pdf, name='generate_pdf'),
     path('malpractice/', views.malpractice, name='malpractice'),
     path('mark-complete/', views.mark_complete, name='mark_complete'),  # New route for marking status

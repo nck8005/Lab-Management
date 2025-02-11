@@ -31,10 +31,16 @@
 <div id="output-section" {% if not output %}style="display: none;"{% endif %}>
     <h3>Output:</h3>
     <pre id="output-content">{{ output }}</pre>
-    <a id="view-pdf-button" href="{% url 'view_pdf' code=code|urlencode output=output|urlencode %}">
-        <button>View as PDF</button>
-    </a>
+
+    {% if code and output %}
+        <a id="view-pdf-button" href="{% url 'view_pdf' code=code|urlencode output=output|urlencode %}">
+            <button>View as PDF</button>
+        </a>
+    {% else %}
+        <p>No valid program output to view as PDF.</p>
+    {% endif %}
 </div>
+
 
 <video id="webcam" autoplay playsinline width="320" height="240" style="border: 1px solid black; display: none;"></video>
 <audio id="alarm-sound" src="/static/alarm3.mp3" preload="auto"></audio>

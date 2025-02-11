@@ -61,7 +61,7 @@
         }
 
         .spacer {
-            height: 3em; /* Adds 3 blank lines */
+            height: 3em;
         }
 
         @media print {
@@ -84,19 +84,18 @@
             }
 
             .button-container {
-                display: none; /* Hide buttons during print */
+                display: none;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Program and Output Section -->
     {% if code|length <= 100 and output|length <= 100 %}
     <div class="page">
         <h1>Program:</h1>
         <h2>Aim:</h2>
         <p>{{ question }}</p>
-        <div class="spacer"></div> <!-- Blank space -->
+        <div class="spacer"></div>
 
         <div class="program">
             <h2>Source Code:</h2>
@@ -113,7 +112,7 @@
         <h1>Program:</h1>
         <h2>Aim:</h2>
         <p>{{ question }}</p>
-        <div class="spacer"></div> <!-- Blank space -->
+        <div class="spacer"></div>
 
         <div class="program">
             <h2>Source Code:</h2>
@@ -129,20 +128,32 @@
     </div>
     {% endif %}
 
-    <!-- Handle Dynamic Content Length -->
-    {% if code|length > 100 or output|length > 100 %}
-    {% for page_content in dynamic_content %}
-    <div class="page">
-        <pre>{{ page_content|safe }}</pre>
-    </div>
-    {% endfor %}
-    {% endif %}
-
     {% if not hide_button %}
     <div class="button-container">
         <a href="{% url 'generate_pdf' code=code|urlencode output=output|urlencode %}">Download PDF</a>
-        <button onclick="markComplete('{{ question }}')" style="background-color: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Complete</button>
+        <a href="#" style="background-color: #28a745;" onclick="markComplete('{{ question }}'); return false;">Complete</a>
     </div>
+
+    <script>
+        function markComplete(question) {
+            fetch('{% url "mark_complete" %}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ question: question })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    window.location.href = '{% url "home" %}';
+                } else {
+                    alert("An error occurred. Please try again.");
+                }
+            });
+        }
+    </script>
     {% endif %}
 </body>
 </html>

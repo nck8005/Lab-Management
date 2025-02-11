@@ -1,18 +1,21 @@
 from django.shortcuts import render, redirect
-from .models import User,CodeSubmission
+from .models import User, CodeSubmission
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.template.loader import render_to_string
-from django.contrib.auth import authenticate, login
 from urllib.parse import unquote
-from django.http import JsonResponse
-import json
 import requests
 import pdfkit
+import json
 
 # Configure pdfkit with wkhtmltopdf path
 PDFKIT_CONFIG = pdfkit.configuration(wkhtmltopdf=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe')
 
+QUESTIONS = {
+    "question_1": "Write a Python program to find the factorial of a number.",
+    "question_2": "Write a Python program to check if a string is a palindrome.",
+    "question_3": "Write a Python program to generate Fibonacci series up to a given number."
+}
 
 def register_page(request):
     if request.method == 'POST':
@@ -24,7 +27,7 @@ def register_page(request):
 
         # Save the user to the database
         User.objects.create(username=username, admission_no=admission_no)
-        return redirect('login')  # Redirect to the login page
+        return redirect('login')
 
     return render(request, 'register.html')
 
@@ -34,30 +37,27 @@ def login_page(request):
         username = request.POST.get('username')
         admission_no = request.POST.get('admission_no')
 
-        # Authenticate user by checking the database
         try:
             user = User.objects.get(username=username, admission_no=admission_no)
-            request.session['username'] = user.username  # Store user session
+            request.session['username'] = user.username
             return redirect('home')
         except User.DoesNotExist:
             return render(request, 'login.html', {'error': 'Invalid credentials'})
 
     return render(request, 'login.html')
 
-QUESTIONS = {
-    "question_1": "Write a Python program to find the factorial of a number.",
-    "question_2": "Write a Python program to check if a string is a palindrome.",
-    "question_3": "Write a Python program to generate Fibonacci series up to a given number."
-}
 
 def home_page(request):
-    completed_questions = request.session.get('completed_questions', [])
+    user = User.objects.get(username=request.session.get('username'))
     submissions = {}
 
-    for key, question in QUESTIONS.items():
+    for key, question_text in QUESTIONS.items():
+        submission = CodeSubmission.objects.filter(user=user, question=question_text).first()
+        
         submissions[key] = {
-            'submitted': question in completed_questions,
-            'pdf_generated': question in completed_questions
+            'question': question_text,
+            'submitted': bool(submission),
+            'pdf_generated': bool(submission and submission.output)
         }
 
     return render(request, 'home.html', {'submissions': submissions, 'questions': QUESTIONS})
@@ -71,39 +71,36 @@ def index(request):
     user = User.objects.get(username=request.session.get('username'))
     question = request.POST.get('question') or request.session.get('question', '')
 
-    # Save question in session for later
     if question:
         request.session['question'] = question
 
     submission = CodeSubmission.objects.filter(user=user, question=question).first()
-
     code = submission.code if submission else ''
     output = submission.output if submission else ''
+
     selected_mode = request.GET.get('mode', 'lab')
 
-    # Prevent returning to index page after malpractice detection
     if request.session.get('malpractice_cycles', 0) >= 3 and selected_mode == "exam":
         request.session['malpractice_detected'] = True
         return redirect('malpractice')
+
+    if selected_mode == "exam" and (not code or not output):
+        return HttpResponse("Error: Code or Output missing for exam mode", status=400)
 
     return render(request, 'index.html', {
         'selected_mode': selected_mode,
         'question': question,
         'code': code if selected_mode == "lab" else '',
-        'output': output if selected_mode == "lab" else ''
+        'output': output if selected_mode == "lab" else '',
     })
 
 
-
 def save_code(request):
-    """Save code without needing compilation."""
     user = User.objects.get(username=request.session.get('username'))
     question = request.session.get('question', '')
 
     if request.method == 'POST':
         code = request.POST.get('code', '')
-
-        # Save code even if not compiled
         submission, created = CodeSubmission.objects.get_or_create(user=user, question=question)
         submission.code = code
         submission.save()
@@ -147,10 +144,17 @@ def compile_code(request):
         'question': question
     })
 
+
 def view_pdf(request, code, output):
+    if not code or not output:
+        return redirect('index')
+
     decoded_code = unquote(code)
     decoded_output = unquote(output)
     question = request.session.get('question', '')
+
+    if not question:
+        return redirect('home')
 
     return render(request, 'record.html', {
         'code': decoded_code,
@@ -177,12 +181,10 @@ def generate_pdf(request, code, output):
 
     pdf = pdfkit.from_string(html_content, False, configuration=PDFKIT_CONFIG)
 
-    # Save PDF status in the session instead of the database
-    if 'completed_questions' not in request.session:
-        request.session['completed_questions'] = []
-    if question not in request.session['completed_questions']:
-        request.session['completed_questions'].append(question)
-    request.session.modified = True
+    # Update database to mark PDF as generated
+    submission, created = CodeSubmission.objects.get_or_create(user=user, question=question)
+    submission.pdf_generated = True
+    submission.save()
 
     response = HttpResponse(pdf, content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="record.pdf"'
@@ -190,21 +192,26 @@ def generate_pdf(request, code, output):
     return response
 
 
+
 def malpractice(request):
     return render(request, 'malpractice.html')
+
+def mark_question_complete(request, question):
+    if 'completed_questions' not in request.session:
+        request.session['completed_questions'] = []
+    if question not in request.session['completed_questions']:
+        request.session['completed_questions'].append(question)
+    request.session.modified = True
 
 def mark_complete(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         question = data.get('question')
 
-        # Save the status in session for simplicity
-        if 'completed_questions' not in request.session:
-            request.session['completed_questions'] = []
-        if question not in request.session['completed_questions']:
-            request.session['completed_questions'].append(question)
-        request.session.modified = True
+        if not question:
+            return JsonResponse({'status': 'error', 'message': 'Invalid question'})
 
+        mark_question_complete(request, question)
         return JsonResponse({'status': 'success'})
 
     return JsonResponse({'status': 'error'}, status=400)
