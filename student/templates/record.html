@@ -91,6 +91,25 @@
 </head>
 <body>
     {% if code|length <= 100 and output|length <= 100 %}
+<<<<<<< HEAD
+=======
+    <div class="page">
+        <h1>Program:</h1>
+        <h2>Aim:</h2>
+        <div class="spacer"></div> <!-- Blank space -->
+
+        <div class="program">
+            <h2>Source Code:</h2>
+            <pre>{{ code|safe }}</pre>
+        </div>
+
+        <div class="output">
+            <h2>Output:</h2>
+            <pre>{{ output|safe }}</pre>
+        </div>
+    </div>
+    {% else %}
+>>>>>>> 10053718143411498c6dca98b817fab71d55cd3a
     <div class="page">
         <h1>Program:</h1>
         <h2>Aim:</h2>
